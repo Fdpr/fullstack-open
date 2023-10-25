@@ -8,7 +8,8 @@ const App = () => {
 
   const addName = (e) => {
     e.preventDefault()
-    setPersons(persons.concat({name: newName}))
+    if (persons.findIndex(p => p.name === newName) === -1) setPersons(persons.concat({name: newName}))
+    else alert(`${newName} is already in the phone book!`)
   }
 
   const handleFieldChange = (e) => setNewName(e.target.value)
