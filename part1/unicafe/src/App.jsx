@@ -19,6 +19,8 @@ const App = () => {
       <Display category="good" number={good}></Display>
       <Display category="neutral" number={neutral}></Display>
       <Display category="bad" number={bad}></Display>
+      <Display category="average" number={(good - bad) / (good + bad + neutral)}></Display>
+      <Display category="positive" number={((good / (good + bad + neutral)) * 100) + " %"}></Display>
     </div>
   )
 }
