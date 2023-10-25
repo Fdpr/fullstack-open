@@ -3,14 +3,12 @@ import { useState } from 'react'
 const Info = ({ name, number }) => <p>{name} {number}</p>
 
 const Numbers = ({ persons }) => <>
-  <h2>Numbers</h2>
   {persons.map(p => <Info key={p.name} name={p.name} number={p.number} />)}
 </>
 
 const Filter = ({ handleStateChange }) => <div>filter shown with <input onChange={handleStateChange}></input></div>
 
 const NumberForm = ({handleSubmit, handleNameChange, handleNumberChange}) => <>
-  <h2>Add a new number</h2>
   <form onSubmit={handleSubmit}>
     <div>name: <input onChange={handleNameChange} /></div>
     <div>number: <input onChange={handleNumberChange} /></div>
@@ -45,7 +43,9 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <Filter handleStateChange={handleFilterChange} />
+      <h2>Add a new number</h2>
       <NumberForm handleSubmit={addName} handleNameChange={handleFieldChange} handleNumberChange={handleNumberChange}/>
+      <h2>Numbers</h2>
       <Numbers persons={persons.filter((p) => p.name.toLowerCase().startsWith(newFilter.toLocaleLowerCase()))} />
     </div>
   )
