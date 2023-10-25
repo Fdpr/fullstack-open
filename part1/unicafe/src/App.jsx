@@ -1,17 +1,17 @@
 import { useState } from 'react'
 
 const Button = ({ text, handleClick }) => <button onClick={handleClick}>{text}</button>
-const Display = ({ category, number }) => <p>{category}: {number}</p>
+const StatisticLine = ({ category, number }) => <p>{category}: {number}</p>
 const Statistics = ({ good, neutral, bad }) => {
   const average = (good - bad) / (good + neutral + bad)
   const positive = ((good) / (good + neutral + bad)) * 100
   if (good + neutral + bad > 0)
     return <>
-      <Display category="good" number={good}></Display>
-      <Display category="neutral" number={neutral}></Display>
-      <Display category="bad" number={bad}></Display>
-      <Display category="average" number={average}></Display>
-      <Display category="positive" number={positive + " %"}></Display>
+      <StatisticLine category="good" number={good}></StatisticLine>
+      <StatisticLine category="neutral" number={neutral}></StatisticLine>
+      <StatisticLine category="bad" number={bad}></StatisticLine>
+      <StatisticLine category="average" number={average}></StatisticLine>
+      <StatisticLine category="positive" number={positive + " %"}></StatisticLine>
     </>
   else
     return <p>No feedback given</p>
