@@ -1,5 +1,25 @@
 import { useState } from 'react'
 
+const Info = ({ name, number }) => <p>{name} {number}</p>
+
+const Numbers = ({ persons }) => <>
+  <h2>Numbers</h2>
+  {persons.map(p => <Info key={p.name} name={p.name} number={p.number} />)}
+</>
+
+const Filter = ({ handleStateChange }) => <div>filter shown with <input onChange={handleStateChange}></input></div>
+
+const NumberForm = ({handleSubmit, handleNameChange, handleNumberChange}) => <>
+  <h2>Add a new number</h2>
+  <form onSubmit={handleSubmit}>
+    <div>name: <input onChange={handleNameChange} /></div>
+    <div>number: <input onChange={handleNumberChange} /></div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+</>
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -24,17 +44,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with <input onChange={handleFilterChange}></input></div>
-      <h2>Add a new number</h2>
-      <form onSubmit={addName}>
-        <div>name: <input onChange={handleFieldChange} /></div>
-        <div>number: <input onChange={handleNumberChange} /></div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {persons.filter((p) => p.name.toLowerCase().startsWith(newFilter.toLocaleLowerCase())).map(person => <p key={person.name}>{person.name} {person.number}</p>)}
+      <Filter handleStateChange={handleFilterChange} />
+      <NumberForm handleSubmit={addName} handleNameChange={handleFieldChange} handleNumberChange={handleNumberChange}/>
+      <Numbers persons={persons.filter((p) => p.name.toLowerCase().startsWith(newFilter.toLocaleLowerCase()))} />
     </div>
   )
 }
