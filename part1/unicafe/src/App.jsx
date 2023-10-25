@@ -1,15 +1,20 @@
 import { useState } from 'react'
 
-const Button = ({text, handleClick}) => <button onClick = {handleClick}>{text}</button>
-const Display = ({category, number}) => <p>{category}: {number}</p>
-const Statistics = ({good, neutral, bad}) => {
+const Button = ({ text, handleClick }) => <button onClick={handleClick}>{text}</button>
+const Display = ({ category, number }) => <p>{category}: {number}</p>
+const Statistics = ({ good, neutral, bad }) => {
   const average = (good - bad) / (good + neutral + bad)
   const positive = ((good) / (good + neutral + bad)) * 100
-
-  return <>
-    <Display category="average" number={average}></Display>
-    <Display category="positive" number={positive + " %"}></Display>
-  </>
+  if (good + neutral + bad > 0)
+    return <>
+      <Display category="good" number={good}></Display>
+      <Display category="neutral" number={neutral}></Display>
+      <Display category="bad" number={bad}></Display>
+      <Display category="average" number={average}></Display>
+      <Display category="positive" number={positive + " %"}></Display>
+    </>
+  else
+    return <p>No feedback given</p>
 }
 
 const App = () => {
@@ -25,9 +30,6 @@ const App = () => {
       <Button text="neutral" handleClick={() => setNeutral(neutral + 1)}></Button>
       <Button text="bad" handleClick={() => setBad(bad + 1)}></Button>
       <h1>statistics</h1>
-      <Display category="good" number={good}></Display>
-      <Display category="neutral" number={neutral}></Display>
-      <Display category="bad" number={bad}></Display>
       <Statistics good={good} neutral={neutral} bad={bad}></Statistics>
     </div>
   )
