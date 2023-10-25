@@ -24,12 +24,24 @@ const App = () => {
     setScore(newScore)
   }
 
+  let maxVoted = 0
+  let max = 0;
+  for (let i = 0; i < anecdotes.length; i++){
+    if (score[i] > max){
+      max = score[i]
+      maxVoted = i
+    }
+  }
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <p>has {score[selected]} votes.</p>
       <Button text="next anecdote" handleClick={getRandomAnecdote}></Button>
       <Button text="upvote" handleClick={updateScore}></Button>
+      <h1>Anecdote with most votest</h1>
+      {anecdotes[maxVoted]}
     </div>
   )
 }
