@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Info = ({ name, number }) => <p>{name} {number}</p>
 
@@ -8,7 +9,7 @@ const Numbers = ({ persons }) => <>
 
 const Filter = ({ handleStateChange }) => <div>filter shown with <input onChange={handleStateChange}></input></div>
 
-const NumberForm = ({handleSubmit, handleNameChange, handleNumberChange}) => <>
+const NumberForm = ({ handleSubmit, handleNameChange, handleNumberChange }) => <>
   <form onSubmit={handleSubmit}>
     <div>name: <input onChange={handleNameChange} /></div>
     <div>number: <input onChange={handleNumberChange} /></div>
@@ -19,15 +20,18 @@ const NumberForm = ({handleSubmit, handleNameChange, handleNumberChange}) => <>
 </>
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/persons")
+      .then(response => {
+        setPersons(response.data)
+      })
+  }, [])
 
   const addName = (e) => {
     e.preventDefault()
@@ -44,7 +48,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter handleStateChange={handleFilterChange} />
       <h2>Add a new number</h2>
-      <NumberForm handleSubmit={addName} handleNameChange={handleFieldChange} handleNumberChange={handleNumberChange}/>
+      <NumberForm handleSubmit={addName} handleNameChange={handleFieldChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
       <Numbers persons={persons.filter((p) => p.name.toLowerCase().startsWith(newFilter.toLocaleLowerCase()))} />
     </div>
