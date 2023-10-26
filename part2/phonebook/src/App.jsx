@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import api from './api'
 
 const Info = ({ name, number }) => <p>{name} {number}</p>
 
@@ -25,15 +26,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
 
-  const addPersonToServer = (person) => {
-    axios
-      .post("http://localhost:3001/persons", person)
-      .then(response => setPersons(persons.concat(response.data)))
-  }
-
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
+    api.getAll()
       .then(response => {
         setPersons(response.data)
       })
@@ -41,7 +35,7 @@ const App = () => {
 
   const addName = (e) => {
     e.preventDefault()
-    if (persons.findIndex(p => p.name === newName) === -1) addPersonToServer({ name: newName, number: newNumber })
+    if (persons.findIndex(p => p.name === newName) === -1) api.create({ name: newName, number: newNumber }).then(response => setPersons(persons.concat(response.data)))
     else alert(`${newName} is already in the phone book!`)
   }
 
