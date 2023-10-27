@@ -41,13 +41,22 @@ const App = () => {
         })
   }
 
-  const addName = (e) => {
+  const addPerson = (e) => {
     e.preventDefault()
-    if (persons.findIndex(p => p.name === newName) === -1) api.create({ name: newName, number: newNumber }).then(response => setPersons(persons.concat(response.data)))
-    else alert(`${newName} is already in the phone book!`)
+    const idx = persons.findIndex(p => p.name === newName)
+    if (idx === -1)
+      api.create({ name: newName, number: newNumber })
+        .then(response => setPersons(persons.concat(response.data)))
+    else if (window.confirm(`${newName} is already in the phone book, replace the existing number with the new one?`))
+      api.update({... persons[idx], number: newNumber}, persons[idx].id)
+        .then(() => {
+          const newPersons = [...persons]
+          newPersons[idx] = {... persons[idx], number: newNumber}
+          setPersons(newPersons)
+        })
   }
 
-  const handleFieldChange = (e) => setNewName(e.target.value)
+  const handleNameChange = (e) => setNewName(e.target.value)
   const handleNumberChange = (e) => setNewNumber(e.target.value)
   const handleFilterChange = (e) => setNewFilter(e.target.value)
 
@@ -58,7 +67,7 @@ const App = () => {
       <h2>Phonebook</h2>
       <Filter handleStateChange={handleFilterChange} />
       <h2>Add a new number</h2>
-      <NumberForm handleSubmit={addName} handleNameChange={handleFieldChange} handleNumberChange={handleNumberChange} />
+      <NumberForm handleSubmit={addPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
       <Numbers persons={filteredPersons} handleDelete={delPerson}/>
     </div>
