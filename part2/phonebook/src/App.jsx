@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import api from './api'
 
-const Message = ({message}) => {
+const Message = ({message, isBad}) => {
   const style = {
-    border: "3px solid green",
+    border: isBad? "3px solid red" : "3px solid green",
     borderRadius: 10,
     padding: 10,
-    color: "green",
+    color: isBad? "red" : "green",
     backgroundColor: "lightgrey",
 
   }
@@ -39,6 +39,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [newFilter, setNewFilter] = useState('')
   const [message, setMessage] = useState(null)
+  const [isMessageBad, setIsMessageBad] = useState(null)
 
   useEffect(() => {
     api.getAll()
@@ -73,9 +74,14 @@ const App = () => {
           setPersons(newPersons)
           newMessage(`Changed the number of ${newPersons[idx].name}`)
         })
+        .catch(() => {
+          newMessage(`Information of ${persons[idx].name} has already been removed from the server`, "true")
+          setPersons(persons.toSpliced(idx, 1))
+        })
   }
 
-  const newMessage = (message) => {
+  const newMessage = (message, isBad) => {
+    setIsMessageBad(isBad)
     setMessage(message)
     setTimeout(() => setMessage(null), 5000)
   }
@@ -89,7 +95,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Message message={message} />
+      <Message message={message} isBad={isMessageBad}/>
       <Filter handleStateChange={handleFilterChange} />
       <h2>Add a new number</h2>
       <NumberForm handleSubmit={addPerson} handleNameChange={handleNameChange} handleNumberChange={handleNumberChange} />
