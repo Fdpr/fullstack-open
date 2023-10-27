@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import api from './api'
 
-const Info = ({ name, number }) => <p>{name} {number}</p>
+const Info = ({ name, number, handleDelete}) => <p>{name} {number} <button onClick={handleDelete}>delete</button></p>
 
-const Numbers = ({ persons }) => <>
-  {persons.map(p => <Info key={p.name} name={p.name} number={p.number} />)}
+const Numbers = ({ persons, handleDelete }) => <>
+  {persons.map(p => <Info key={p.name} name={p.name} number={p.number} handleDelete={() => handleDelete(p)}/>)}
 </>
 
 const Filter = ({ handleStateChange }) => <div>filter shown with <input onChange={handleStateChange}></input></div>
@@ -33,6 +33,14 @@ const App = () => {
       })
   }, [])
 
+  const delPerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`))
+      api.del(person.id)
+        .then(() => {
+          setPersons(persons.toSpliced(persons.indexOf(person), 1))
+        })
+  }
+
   const addName = (e) => {
     e.preventDefault()
     if (persons.findIndex(p => p.name === newName) === -1) api.create({ name: newName, number: newNumber }).then(response => setPersons(persons.concat(response.data)))
@@ -43,6 +51,8 @@ const App = () => {
   const handleNumberChange = (e) => setNewNumber(e.target.value)
   const handleFilterChange = (e) => setNewFilter(e.target.value)
 
+  const filteredPersons = persons.filter((p) => p.name.toLowerCase().startsWith(newFilter.toLocaleLowerCase()))
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -50,7 +60,7 @@ const App = () => {
       <h2>Add a new number</h2>
       <NumberForm handleSubmit={addName} handleNameChange={handleFieldChange} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Numbers persons={persons.filter((p) => p.name.toLowerCase().startsWith(newFilter.toLocaleLowerCase()))} />
+      <Numbers persons={filteredPersons} handleDelete={delPerson}/>
     </div>
   )
 }
